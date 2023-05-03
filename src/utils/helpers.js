@@ -7,3 +7,5 @@ export async function removeFile(path) {
 		console.error("Error when file remove:")
 	}
 };
+
+export const delay = (ms) => new Promise((r) => setTimeout(r,ms));

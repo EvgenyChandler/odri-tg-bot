@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import config from "config";
 import { createReadStream } from "fs";
+import { delay } from "./utils/helpers.js";
 
 class OpenAI {
 
@@ -26,6 +27,10 @@ class OpenAI {
 
 			return response.data.choices[0].message
 		} catch (error) {
+			if (response.status === 429) {
+				await delay(5000);
+				return this.chat(messages);
+			}
 			console.error("Error in chat request:", error.message);
 		}
 	};

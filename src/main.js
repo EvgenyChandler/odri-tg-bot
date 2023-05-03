@@ -13,6 +13,7 @@ const INIT_SESSION = {
 
 const store = Redis({
 	url: "redis://127.0.0.1:6379",
+	ttl: 2592000,
 });
 
 const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
