@@ -1,6 +1,7 @@
 import { Telegraf, session } from "telegraf";
 import { code } from "telegraf/format";
 import { message } from "telegraf/filters";
+import { Redis } from "@telegraf/session/redis";
 import config from "config";
 import { voiceConverter } from "./voice-converter.js";
 import { openai } from "./openai.js";
@@ -10,9 +11,13 @@ const INIT_SESSION = {
 	messages: [],
 };
 
+const store = Redis({
+	url: "redis://127.0.0.1:6379",
+});
+
 const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
 
-bot.use(session());
+bot.use(session({ store }));
 
 bot.command("new", async (ctx) => {
 	ctx.session = INIT_SESSION;
@@ -56,7 +61,6 @@ bot.on(message("voice"), async (ctx) => {
 
 bot.on(message("text"), async (ctx) => {
 	ctx.session ??= INIT_SESSION;
-
 	try {
 		await ctx.reply(code("Принял. Дайте подумать..."));
 
