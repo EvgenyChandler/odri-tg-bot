@@ -16,12 +16,12 @@ bot.use(session());
 
 bot.command("new", async (ctx) => {
 	ctx.session = INIT_SESSION;
-	await ctx.reply("Просто спроси или напиши, расскажу всё что знаю");
+	await ctx.reply("Просто спроси или напиши, расскажу всё, что знаю");
 });
 
 bot.command("start", async (ctx) => {
 	ctx.session = INIT_SESSION;
-	await ctx.reply("Просто спроси или напиши, расскажу всё что знаю");
+	await ctx.reply("Просто спроси или напиши, расскажу всё, что знаю");
 });
 
 bot.on(message("voice"), async (ctx) => {
@@ -50,6 +50,7 @@ bot.on(message("voice"), async (ctx) => {
 		removeFile(voiceMp3Path);
 	} catch (error) {
 		console.error('Error in voice message');
+		await ctx.reply('Error in voice message:', error.message);
 	}
 });
 
@@ -68,7 +69,8 @@ bot.on(message("text"), async (ctx) => {
 		await ctx.reply(response.content);
 
 	} catch (error) {
-		console.error('Error in voice message');
+		console.error('Error in text message:', error.message);
+		await ctx.reply('Error in text message:', error.message);
 	}
 });
 
