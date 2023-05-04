@@ -13,7 +13,7 @@ const INIT_SESSION = {
 
 const store = Redis({
 	url: "redis://127.0.0.1:6379",
-	ttl: 2592000,
+	ttl: 3600*2,
 });
 
 const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
@@ -56,7 +56,7 @@ bot.on(message("voice"), async (ctx) => {
 		removeFile(voiceMp3Path);
 	} catch (error) {
 		console.error('Error in voice message');
-		await ctx.reply('Error in voice message:', error.message);
+		await ctx.reply('Ошибка в голосовом сообщении, попробуйте сбросить контекст командой /new');
 	}
 });
 
@@ -75,7 +75,7 @@ bot.on(message("text"), async (ctx) => {
 
 	} catch (error) {
 		console.error('Error in text message:', error.message);
-		await ctx.reply('Error in text message:', error.message);
+		await ctx.reply('Ошибка, опробуйте сбросить контекст командой /new');
 	}
 });
 

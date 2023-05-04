@@ -20,6 +20,7 @@
     "axios": "^1.4.0",
     "config": "^3.3.9",
     "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
     "openai": "^3.2.1",
     "redis": "^4.6.6",
     "telegraf": "^4.12.2"

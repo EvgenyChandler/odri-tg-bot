@@ -2,6 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import config from "config";
 import { createReadStream } from "fs";
 import { delay } from "./utils/helpers.js";
+import { services } from "./api/services.js";
 
 class OpenAI {
 
@@ -20,17 +21,14 @@ class OpenAI {
 
 	async chat(messages) {
 		try {
-			const response = await this.openai.createChatCompletion({
+
+			const response = await services.openaiApi.chatCompletions({
 				model: "gpt-3.5-turbo",
 				messages,
 			});
 
 			return response.data.choices[0].message
 		} catch (error) {
-			if (response.status === 429) {
-				await delay(5000);
-				return this.chat(messages);
-			}
 			console.error("Error in chat request:", error.message);
 		}
 	};
@@ -38,7 +36,7 @@ class OpenAI {
 	async transcription(voiceFilePath) {
 		try {
 
-			const response = await this.openai.createTranscription(
+			const response = await services.openaiApi.voiceTranscription(
 				createReadStream(voiceFilePath),
 				"whisper-1"
 			);
