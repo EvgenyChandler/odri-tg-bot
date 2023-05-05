@@ -4,51 +4,50 @@ import { createReadStream } from "fs";
 import { services } from "./api/services.js";
 
 class OpenAI {
+    roles = {
+        ASSISTANT: "assistant",
+        USER: "user",
+        SYSTEM: "system",
+    };
 
-	roles = {
-		ASSISTANT: "assistant",
-		USER: "user",
-		SYSTEM: "system",
-	}
+    constructor(apiKey) {
+        const configuration = new Configuration({
+            apiKey,
+        });
+        this.openai = new OpenAIApi(configuration);
+    }
 
-	constructor(apiKey) {
-		const configuration = new Configuration({
-			apiKey,
-		});
-		this.openai = new OpenAIApi(configuration);
-	};
+    async chat(messages) {
+        try {
+            const response = await services.openaiApi.chatCompletions({
+                model: "gpt-3.5-turbo",
+                messages,
+            });
 
-	async chat(messages) {
-		try {
+            if (response.data.choices[0].finish_reason === "length") {
+                throw new Error(
+                    "Контекст сообщений переполнен, сбросьте контекст командой: /new, и повторите запрос"
+                );
+            }
 
-			const response = await services.openaiApi.chatCompletions({
-				model: "gpt-3.5-turbo",
-				messages,
-			});
+            return response.data.choices[0].message;
+        } catch (error) {
+            console.error("Error in chat request:", error.message);
+        }
+    }
 
-			if (response.data.choices[0].finish_reason === "length") {
-				throw new Error("Контекст сообщений переполнен, сбросьте контекст командой: /new, и повторите запрос");
-			};
+    async transcription(voiceFilePath) {
+        try {
+            const response = await services.openaiApi.voiceTranscription(
+                createReadStream(voiceFilePath),
+                "whisper-1"
+            );
 
-			return response.data.choices[0].message
-		} catch (error) {
-			console.error("Error in chat request:", error.message);
-		}
-	};
-
-	async transcription(voiceFilePath) {
-		try {
-
-			const response = await services.openaiApi.voiceTranscription(
-				createReadStream(voiceFilePath),
-				"whisper-1"
-			);
-
-			return response.data.text
-		} catch (error) {
-			console.error("Error in transcription:", error.message);
-		}
-	};
-};
+            return response.data.text;
+        } catch (error) {
+            console.error("Error in transcription:", error.message);
+        }
+    }
+}
 
 export const openai = new OpenAI(config.get("OPENAI_KEY"));
