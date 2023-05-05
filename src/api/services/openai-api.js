@@ -16,7 +16,7 @@ export class OpenaiApiService {
 			});
 			return res
 		} catch (error) {
-			console.log("Error->:", error);
+			console.log("Error:", error);
 		};
 	};
 
@@ -34,7 +34,7 @@ export class OpenaiApiService {
 				}
 			});
 		} catch (error) {
-			console.log("Error->:", error);
+			console.log("Error:", error);
 		}
 	};
 }

@@ -5,7 +5,7 @@ import { Redis } from "@telegraf/session/redis";
 import config from "config";
 import { voiceConverter } from "./voice-converter.js";
 import { openai } from "./openai.js";
-import { removeFile } from "./utils/helpers.js";
+import { removeFile, checkTokensLimit } from "./utils/helpers.js";
 
 const INIT_SESSION = {
 	messages: [],
@@ -48,6 +48,8 @@ bot.on(message("voice"), async (ctx) => {
 		await ctx.reply(code(`Ваше сообщение:\n ${text}`));
 
 		ctx.session.messages.push({ role: openai.roles.USER, content: text });
+
+		ctx.session.messages = checkTokensLimit(ctx.session.messages);
 		const response = await openai.chat(ctx.session.messages);
 
 		ctx.session.messages.push({ role: openai.roles.ASSISTANT, content: response.content });
@@ -68,6 +70,9 @@ bot.on(message("text"), async (ctx) => {
 		const text = ctx.message.text;
 
 		ctx.session.messages.push({ role: openai.roles.USER, content: text });
+		
+		ctx.session.messages = checkTokensLimit(ctx.session.messages);
+
 		const response = await openai.chat(ctx.session.messages);
 
 		ctx.session.messages.push({ role: openai.roles.ASSISTANT, content: response.content });

@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import config from "config";
 import { createReadStream } from "fs";
-import { delay } from "./utils/helpers.js";
 import { services } from "./api/services.js";
 
 class OpenAI {
@@ -26,6 +25,10 @@ class OpenAI {
 				model: "gpt-3.5-turbo",
 				messages,
 			});
+
+			if (response.data.choices[0].finish_reason === "length") {
+				throw new Error("Контекст сообщений переполнен, сбросьте контекст командой: /new, и повторите запрос");
+			};
 
 			return response.data.choices[0].message
 		} catch (error) {
