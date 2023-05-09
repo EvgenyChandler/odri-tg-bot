@@ -1,0 +1,5 @@
+{
+	"TELEGRAM_TOKEN": "TELEGRAM_TOKEN",
+	"OPENAI_KEY": "OPENAI_KEY",
+	"BASE_OPENAI_URL": "https://example.com"
+}
