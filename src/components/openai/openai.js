@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import config from "config";
 import { createReadStream } from "fs";
-import { services } from "./api/services.js";
+import { services } from "../../api/services.js";
 
 class OpenAI {
     roles = {
